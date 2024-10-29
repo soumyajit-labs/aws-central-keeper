@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { DEV_ENCR_TOKEN } from "../constants";
+import { useNavigate } from "react-router-dom";
 import api from "../api";
 
 function strFormatter(str) {
@@ -54,6 +55,12 @@ function Secrets() {
             .catch((err) => alert(err));
     };
 
+    let navigate = useNavigate();
+    function logout() {
+        localStorage.clear()
+        navigate('/login');
+    }
+
     return (
         <div>
             <head>
@@ -62,8 +69,16 @@ function Secrets() {
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
                 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
             </head>
-            <div>
-                <h2>AWS Key Vault</h2>
+            <div class="row">
+                <div class="col-sm-5">
+                    <h2>AWS Key Vault</h2>
+                </div>
+                <div class="col-sm-3">
+                    <br />
+                <button class="btn btn-info glyphicon glyphicon-log-out" 
+                        type="button" style={{"display": "block", "margin": "10 auto"}}
+                        onClick={logout}>    Logout    </button>
+                </div>
             </div>
             <div class="row">
                 <div class="col-sm-5">
