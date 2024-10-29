@@ -1,9 +1,9 @@
 import subprocess
 import os
-jar_path = 'assets/mule-secure-properties-tool.jar'
+jar_path = 'services/mule-secure-properties-tool.jar'
 
 def translate(key, text, operation):
-  directory_path = "assets/"  # Replace with the actual path
+  directory_path = "services/"  # Replace with the actual path
 
   try:
     for filename in os.listdir(directory_path):
