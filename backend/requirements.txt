@@ -8,5 +8,4 @@ pytz
 sqlparse
 psycopg2-binary
 python-dotenv
-pycryptodome
 boto3
