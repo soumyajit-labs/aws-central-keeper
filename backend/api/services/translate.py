@@ -1,9 +1,5 @@
 import subprocess
-import requests
-import os
-
-jar_path = './api/services/assets/mule-secure-properties-tool.jar'
-
+jar_path = 'backend/api/services/assets/mule-secure-properties-tool.jar'
 def translate(key, text, operation):
   command_args = ['string', operation, 'AES', 'CBC', key, text]
   command = f"java -cp {jar_path} com.mulesoft.tools.SecurePropertiesTool {' '.join(command_args)}"
