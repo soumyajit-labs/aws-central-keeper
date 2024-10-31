@@ -11,4 +11,3 @@ python-dotenv
 boto3
 pycryptodome
 requests
-json
