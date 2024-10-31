@@ -195,7 +195,7 @@ function Secrets() {
                     </div>
                     <div class="col-sm-6">
                         <textarea id="retriggerStatus" rows="2" class="form-control" readOnly 
-                                  placeholder="Retrigger status will be displyed here..."></textarea>
+                                  placeholder="Retrigger status will be displayed here..."></textarea>
                     </div>
                 </div>
             </div>
