@@ -14,13 +14,27 @@ function Secrets() {
     const [vaultName, setVaultName] = useState("");
     const [encryptedVaultContent, setEncryptedVaultContent] = useState("");
     const [isClickable, setIsClickable] = useState(false);
+
+    const resetRetriggerTextAreas = () => {
+        const retriggerArgText = document.getElementById('retriggerArgs');
+        retriggerArgText.value = "Arguments with which the Github retrigger action will be called...";
+        retriggerArgText.style.backgroundColor = '#f2f2f2';
+
+        const retriggerStatusText = document.getElementById('retriggerStatus');
+        retriggerStatusText.value = "Retrigger status will be displyed here...";
+        retriggerStatusText.style.backgroundColor = '#f2f2f2';
+    }
+
     const getSecret = (e) => {
         api.get("/api/aws/secrets/fetch/?name=" + vaultName)
             .then((res) => res.data)
-            .then((data) => { if (data == 400) {document.getElementById('yamlEncrypted').value = "Unhandled problem!"} else
-                              if (data == 401) {document.getElementById('yamlEncrypted').value = "Not found!"}
+            .then((data) => { if (data == 400) {document.getElementById('yamlEncrypted').value = "Unhandled problem!"; 
+                              resetRetriggerTextAreas();} else
+                              if (data == 401) {document.getElementById('yamlEncrypted').value = "Not found!"; 
+                              resetRetriggerTextAreas();}
                               else {setEncryptedVaultContent(data); console.log(encryptedVaultContent); 
-                              document.getElementById('yamlEncrypted').value = strFormatter(data); }})
+                              document.getElementById('yamlEncrypted').value = strFormatter(data); 
+                              resetRetriggerTextAreas();}})
             .catch((err) => alert(err));
     };
 
@@ -174,7 +188,7 @@ function Secrets() {
                 <div class="row">
                     <div class="col-sm-5">
                         <textarea id="retriggerArgs" rows="2" class="form-control" readOnly 
-                                  placeholder="Arguements with which the Github retrigger action will be called..."></textarea>
+                                  placeholder="Arguments with which the Github retrigger action will be called..."></textarea>
                     </div>
                     <div class="col-sm-1">
                         <button class="btn btn-info glyphicon glyphicon-refresh" disabled={!isClickable} onClick={(e) => {retriggerGithubBuild(e)}} type="button">  Retrigger</button>
