@@ -3,8 +3,8 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
-from .serializers import UserSerializer, SecretsSerializer, TransalationRequestSerializer
-from .services import yamlparser, aws
+from .serializers import UserSerializer, SecretsSerializer, TransalationRequestSerializer, GithubRetriggerAction
+from .services import yamlparser, aws, github
 
 # Create your views here.
 
@@ -45,4 +45,19 @@ class AWSSecrets(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         request = serializer.data
         response = aws.upsert(key=request.get('name'), val=request.get('value'))
+        return response
+    
+class RetriggerGithubBuild(generics.ListCreateAPIView):
+    serializer_class = GithubRetriggerAction
+    permission_classes = [IsAuthenticated]
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        resp = self.perform_create(serializer)
+        return Response(resp)
+    
+    def perform_create(self, serializer):
+        request = serializer.data
+        response = github.workflow_retrigger(buildArg=request.get('event'), repository=request.get('repository'))
         return response

@@ -13,6 +13,7 @@ function strFormatter(str) {
 function Secrets() {    
     const [vaultName, setVaultName] = useState("");
     const [encryptedVaultContent, setEncryptedVaultContent] = useState("");
+    const [isClickable, setIsClickable] = useState(false);
     const getSecret = (e) => {
         api.get("/api/aws/secrets/fetch/?name=" + vaultName)
             .then((res) => res.data)
@@ -26,9 +27,34 @@ function Secrets() {
     const postSecret = (e) => {
         e.preventDefault();
         api.post("/api/aws/secrets/upsert/", { 'name': vaultName, 'value': encryptedVaultContent })
-            .then((res) => { if (res.data == 200) {document.getElementById('yamlEncrypted').value = "Vault updated!";} else
+            .then((res) => { if (res.data == 200) {
+                                document.getElementById('yamlEncrypted').value = "Vault updated!";
+                                setIsClickable(true);
+                                const args = vaultName.indexOf('-');
+                                const retriggerArgs = 'Environtment: ' + vaultName.substring(0, args) +
+                                                      ' & Repository: ' + vaultName.substring(args + 1);
+                                const retriggerArgText = document.getElementById('retriggerArgs');
+                                retriggerArgText.value = retriggerArgs;
+                                retriggerArgText.style.backgroundColor = '#00FF00';
+                            } else
                              if (res.data == 201) {document.getElementById('yamlEncrypted').value = "Vault created!";}
-                             else {document.getElementById('yamlEncrypted').value = "Unable to push through!";} })
+                             else {
+                                document.getElementById('yamlEncrypted').value = "Unable to push through!";
+                                const retriggerArgText = document.getElementById('retriggerArgs');
+                                retriggerArgText.value = "Oh snap, the credentials cannot be updated!";
+                                retriggerArgText.style.backgroundColor = '#FF0000';
+                            } })
+            .catch((err) => alert(err));
+    };
+
+    const retriggerGithubBuild = (e) => {
+        e.preventDefault();
+        const args = vaultName.indexOf('-');
+        api.post("/api/git/retrigger/", { 'event': vaultName.substring(0, args), 'repository': vaultName.substring(args + 1) })
+            .then((res) => { const retriggerStatus = document.getElementById('retriggerStatus');
+                             retriggerStatus.value = res.data['message'];
+                             if (res.data['status'] == 204) { retriggerStatus.style.backgroundColor = '#00FF00'; } 
+                             else { retriggerStatus.style.backgroundColor = '#FF0000'; } })
             .catch((err) => alert(err));
     };
 
@@ -116,7 +142,7 @@ function Secrets() {
                 <div class="row">
                     <div class="col-sm-5">
                         <div class="input-group">
-                            <textarea id="yamlDecrypted" rows="20" class="form-control" placeholder="Decrypted YAML" onChange={(e) => setDecryptedVaultContent(e.target.value)}></textarea>
+                            <textarea id="yamlDecrypted" rows="16" class="form-control" placeholder="Decrypted YAML" onChange={(e) => setDecryptedVaultContent(e.target.value)}></textarea>
                             <div class="input-group-addon">
                                 <div class="glyphicon glyphicon-download event"></div>
                             </div>
@@ -129,7 +155,7 @@ function Secrets() {
                     </div>
                     <div class="col-sm-6">
                         <div class="input-group">
-                            <textarea id="yamlEncrypted" rows="20" class="form-control" placeholder="Encrypted YAML" onChange={(e) => setEncryptedVaultContent(e.target.value)}></textarea>
+                            <textarea id="yamlEncrypted" rows="16" class="form-control" placeholder="Encrypted YAML" onChange={(e) => setEncryptedVaultContent(e.target.value)}></textarea>
                             <div class="input-group-addon">
                                 <div class="glyphicon glyphicon-download event"></div>
                             </div>
@@ -138,6 +164,24 @@ function Secrets() {
                         <div>
                             <button class="btn btn-info glyphicon glyphicon-cloud-upload" type="button" onClick={(e) => postSecret(e)}> Save</button>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="fluid-container">
+                <h4>Directly retrigger the pipeline from here - </h4>
+                <br />
+                <div class="row">
+                    <div class="col-sm-5">
+                        <textarea id="retriggerArgs" rows="2" class="form-control" readOnly 
+                                  placeholder="Arguements with which the Github retrigger action will be called..."></textarea>
+                    </div>
+                    <div class="col-sm-1">
+                        <button class="btn btn-info glyphicon glyphicon-refresh" disabled={!isClickable} onClick={(e) => {retriggerGithubBuild(e)}} type="button">  Retrigger</button>
+                    </div>
+                    <div class="col-sm-6">
+                        <textarea id="retriggerStatus" rows="2" class="form-control" readOnly 
+                                  placeholder="Retrigger status will be displyed here..."></textarea>
                     </div>
                 </div>
             </div>

@@ -24,3 +24,7 @@ class TransalationRequestSerializer(serializers.Serializer):
 class TransalationResponseSerializer(serializers.Serializer):
     status = serializers.CharField()
     text = serializers.CharField()
+
+class GithubRetriggerAction(serializers.Serializer):
+    event = serializers.CharField()
+    repository = serializers.CharField()
