@@ -17,11 +17,11 @@ function Secrets() {
 
     const resetRetriggerTextAreas = () => {
         const retriggerArgText = document.getElementById('retriggerArgs');
-        retriggerArgText.value = "Arguments with which the Github retrigger action will be called...";
+        retriggerArgText.value = "Arguments with which the Github retrigger action will be called is displayed here...";
         retriggerArgText.style.backgroundColor = '#f2f2f2';
 
         const retriggerStatusText = document.getElementById('retriggerStatus');
-        retriggerStatusText.value = "Retrigger status will be displyed here...";
+        retriggerStatusText.value = "Retrigger status will be displayed here...";
         retriggerStatusText.style.backgroundColor = '#f2f2f2';
     }
 
@@ -68,7 +68,9 @@ function Secrets() {
             .then((res) => { const retriggerStatus = document.getElementById('retriggerStatus');
                              retriggerStatus.value = res.data['message'];
                              if (res.data['status'] == 204) { retriggerStatus.style.backgroundColor = '#00FF00'; } 
-                             else { retriggerStatus.style.backgroundColor = '#FF0000'; } })
+                             else { retriggerStatus.style.backgroundColor = '#FF0000'; } 
+                             setIsClickable(false);
+                           })
             .catch((err) => alert(err));
     };
 
@@ -188,7 +190,7 @@ function Secrets() {
                 <div class="row">
                     <div class="col-sm-5">
                         <textarea id="retriggerArgs" rows="2" class="form-control" readOnly 
-                                  placeholder="Arguments with which the Github retrigger action will be called..."></textarea>
+                                  placeholder="Arguments with which the Github retrigger action will be called is displayed here..."></textarea>
                     </div>
                     <div class="col-sm-1">
                         <button class="btn btn-info glyphicon glyphicon-refresh" disabled={!isClickable} onClick={(e) => {retriggerGithubBuild(e)}} type="button">  Retrigger</button>
