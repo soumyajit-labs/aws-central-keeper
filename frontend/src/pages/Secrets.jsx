@@ -30,7 +30,7 @@ function Secrets() {
             .then((res) => res.data)
             .then((data) => { if (data == 400) {document.getElementById('yamlEncrypted').value = "Unhandled problem!"; 
                               resetRetriggerTextAreas();} else
-                              if (data == 401) {document.getElementById('yamlEncrypted').value = "Not found!"; 
+                              if (data == 404) {document.getElementById('yamlEncrypted').value = "Not found!"; 
                               resetRetriggerTextAreas();}
                               else {setEncryptedVaultContent(data); console.log(encryptedVaultContent); 
                               document.getElementById('yamlEncrypted').value = strFormatter(data); 

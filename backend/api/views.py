@@ -1,21 +1,16 @@
 from django.contrib.auth.models import User
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from .authClass import IsAuthenticatedUser
 
-from .serializers import UserSerializer, SecretsSerializer, TransalationRequestSerializer, GithubRetriggerAction
+from .serializers import SecretsSerializer, TransalationRequestSerializer, GithubRetriggerAction
 from .services import yamlparser, aws, github
 
 # Create your views here.
-
-class CreateUserView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [AllowAny]
-
 class TranslateRAML(generics.ListCreateAPIView):
     serializer_class = TransalationRequestSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedUser]
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -31,7 +26,7 @@ class TranslateRAML(generics.ListCreateAPIView):
 
 class AWSSecrets(generics.ListCreateAPIView):
     serializer_class = SecretsSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedUser]
     def get(self, request, *args, **kwargs):
         search = self.request.GET.get('name')
         return Response(aws.fetch(key=search))
@@ -49,7 +44,7 @@ class AWSSecrets(generics.ListCreateAPIView):
     
 class RetriggerGithubBuild(generics.ListCreateAPIView):
     serializer_class = GithubRetriggerAction
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedUser]
     
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

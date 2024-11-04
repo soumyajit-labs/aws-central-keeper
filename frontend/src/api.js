@@ -1,5 +1,7 @@
 import axios from "axios";
 import { ACCESS_TOKEN } from "./constants";
+import { jwtDecode } from "jwt-decode";
+import { refreshToken } from "./components/OktaAuthServices";
 
 const apiUrl = "/choreo-apis/mulecentral/backend/v1";
 
@@ -8,9 +10,19 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(
-  (config) => {
+  async (config) => {
     const token = localStorage.getItem(ACCESS_TOKEN);
-    if (token) {
+    
+    const decoded = jwtDecode(token);
+    const tokenExpiration = decoded.exp;
+    const now = Date.now() / 1000;
+
+    if (tokenExpiration < now) {
+      console.log('Trying to fetch a new token...');
+      const auth = await refreshToken();
+      localStorage.setItem(ACCESS_TOKEN, auth);
+      config.headers.Authorization = `Bearer ${auth}`;
+    } else {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;

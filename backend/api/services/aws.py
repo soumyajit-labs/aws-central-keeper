@@ -13,7 +13,7 @@ def fetch(key):
         get_secret_value_response = client.get_secret_value( SecretId=key )
     except ClientError as e:
         if e.response['Error']['Code'] == 'ResourceNotFoundException':
-            return 401
+            return 404
         else:
             return 400
 

@@ -1,11 +1,11 @@
 import { useState } from "react";
-import api from "../api";
-import { useNavigate } from "react-router-dom";
+import "../styles/Form.css";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
-import "../styles/Form.css"
 import LoadingIndicator from "./LoadingIndicator";
+import { login } from "./OktaAuthServices";
+import { useNavigate } from "react-router-dom";
 
-function Form({ route, method }) {
+function Form({ method }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -16,18 +16,12 @@ function Form({ route, method }) {
     const handleSubmit = async (e) => {
         setLoading(true);
         e.preventDefault();
-
         try {
-            const res = await api.post(route, { username, password })
-            if (method === "login") {
-                localStorage.setItem(ACCESS_TOKEN, res.data.access);
-                localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-                navigate("/secrets")
-            } else {
-                navigate("/login")
-            }
+            const auth = await login(username, password);
+            localStorage.setItem(ACCESS_TOKEN, auth);
+            navigate("/secrets")
         } catch (error) {
-            alert(error)
+            console.error('Login error:', error);
         } finally {
             setLoading(false)
         }
