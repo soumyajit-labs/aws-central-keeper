@@ -1,8 +1,8 @@
 import { OktaAuth } from '@okta/okta-auth-js';
 
 const oktaAuth = new OktaAuth({
-    issuer: import.meta.env.VITE_OKTA_ISSUER ? import.meta.env.VITE_OKTA_ISSUER : window.config.OKTA_ISSUER,
-    clientId: import.meta.env.VITE_OKTA_CLIENT_ID ? import.meta.env.VITE_OKTA_CLIENT_ID : window.config.OKTA_CLIENT_ID,
+    issuer: 'https://dev-19995342.okta.com/oauth2/default',
+    clientId: '0oakucphu8lQXp8Aw5d7',
     redirectUri: window.location.origin + '/login/callback',
     scopes: ['openid', 'profile', 'email', 'offline_access']
 });
