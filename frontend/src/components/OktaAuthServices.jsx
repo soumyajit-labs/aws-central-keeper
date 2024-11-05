@@ -30,14 +30,19 @@ const login = async (username, password) => {
 
 };
 
+const logout = () => {
+    localStorage.clear();
+    window.location.href = '/login';
+};
+
 const refreshToken = async () => {
     try {
         const tokenResponse = await oktaAuth.token.renewTokens();
-        oktaAuth.tokenManager.setTokens(tokenResponse)
+        oktaAuth.tokenManager.setTokens(tokenResponse);
         return tokenResponse.accessToken.accessToken;
     } catch (error) {
         console.error('Error refreshing token', error);
-        return <Navigate to="/login" />;
+        logout();
     }
 };
 
