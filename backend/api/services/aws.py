@@ -20,15 +20,18 @@ def fetch(key):
     secret = get_secret_value_response['SecretString']
     return secret
 
-def upsert(key, val):
+def upsert(key, val, user):
+    print('User: ', user)
     session = boto3.session.Session()
     client = session.client( service_name='secretsmanager', region_name=region )
     try:
-        response = client.update_secret( SecretId=key, SecretString=val )
+        updateRes = client.update_secret( SecretId=key, SecretString=val )
+        updateTag = client.tag_resource( SecretId=key, Tags=[{ 'Key': 'UpsertedBy', 'Value': user }] )
+
         return 200
     except ClientError as e:
         if e.response['Error']['Code'] == 'ResourceNotFoundException':
-            response = client.create_secret( Name=key, SecretString=val )
+            response = client.create_secret( Name=key, SecretString=val, Tags=[{ 'Key': 'UpsertedBy', 'Value': user }] )
             return 201
         else:
             return 400

@@ -6,6 +6,7 @@ from .jwtAuthClass import IsAuthenticatedUser
 
 from .serializers import SecretsSerializer, TransalationRequestSerializer, GithubRetriggerAction
 from .services import yamlparser, aws, github
+from .jwtAuthValidator import userNameSetter
 
 # Create your views here.
 class TranslateRAML(generics.ListCreateAPIView):
@@ -32,14 +33,15 @@ class AWSSecrets(generics.ListCreateAPIView):
         return Response(aws.fetch(key=search))
     
     def create(self, request, *args, **kwargs):
+        user = userNameSetter(request)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        resp = self.perform_create(serializer)
+        resp = self.perform_create(serializer,user)
         return Response(resp)
     
-    def perform_create(self, serializer):
+    def perform_create(self, serializer, *args):
         request = serializer.data
-        response = aws.upsert(key=request.get('name'), val=request.get('value'))
+        response = aws.upsert(key=request.get('name'), val=request.get('value'), user=args[0])
         return response
     
 class RetriggerGithubBuild(generics.ListCreateAPIView):

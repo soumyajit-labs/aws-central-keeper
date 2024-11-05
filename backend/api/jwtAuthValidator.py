@@ -46,6 +46,23 @@ def construct_rsa_key(n, e):
     )
     return pem.decode('utf-8')
 
+def userNameSetter(request):
+    auth_header = request.headers.get('Authorization')
+    token = auth_header.split(' ')[1]
+    try:
+        unverified_header = jwt.get_unverified_header(token)
+        kid = unverified_header['kid']
+        public_key_data = get_public_key_from_jwks(kid)
+        if not public_key_data:
+            raise ValueError('Public key not found for the given kid')
+        public_key_pem = construct_rsa_key(public_key_data['n'], public_key_data['e'])
+        decoded_token = jwt.decode(token, public_key_pem, algorithms=['RS256'], audience=OKTA_AUDIENCE, issuer=OKTA_ISSUER)
+        return (decoded_token.get('sub'))
+    except jwt.ExpiredSignatureError:
+        raise AuthenticationFailed('Token has expired')
+    except jwt.InvalidTokenError as e:
+        raise AuthenticationFailed(f'Invalid token: {e}')
+
 class JWTAuthentication(BaseAuthentication):
     def authenticate(self, request):
         auth_header = request.headers.get('Authorization')
@@ -66,7 +83,9 @@ class JWTAuthentication(BaseAuthentication):
             raise AuthenticationFailed('Token has expired')
         except jwt.InvalidTokenError as e:
             raise AuthenticationFailed(f'Invalid token: {e}')
-        
+    
+
+
     def get_user_from_payload(self, payload):
         return {
             'id': payload.get('sub'),
