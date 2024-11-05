@@ -1,9 +1,8 @@
 import { OktaAuth } from '@okta/okta-auth-js';
-import { Navigate } from "react-router-dom";
 
 const oktaAuth = new OktaAuth({
-    issuer: import.meta.env.VITE_OKTA_ISSUER,
-    clientId: import.meta.env.VITE_OKTA_CLIENT_ID,
+    issuer: import.meta.env.VITE_OKTA_ISSUER ? import.meta.env.VITE_OKTA_ISSUER : window.config.OKTA_ISSUER,
+    clientId: import.meta.env.VITE_OKTA_CLIENT_ID ? import.meta.env.VITE_OKTA_CLIENT_ID : window.config.OKTA_CLIENT_ID,
     redirectUri: window.location.origin + '/login/callback',
     scopes: ['openid', 'profile', 'email', 'offline_access']
 });
