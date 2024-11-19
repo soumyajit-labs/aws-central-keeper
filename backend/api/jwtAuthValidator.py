@@ -76,7 +76,7 @@ class JWTAuthentication(BaseAuthentication):
             if not public_key_data:
                 raise ValueError('Public key not found for the given kid')
             public_key_pem = construct_rsa_key(public_key_data['n'], public_key_data['e'])
-            decoded_token = jwt.decode(token, public_key_pem, algorithms=['RS256'], audience=OKTA_AUDIENCE, issuer=OKTA_ISSUER)
+            decoded_token = jwt.decode(token, public_key_pem, algorithms=['RS256'], audience=OKTA_AUDIENCE, issuer=OKTA_ISSUER, options={'verify_signature': True})
             user = self.get_user_from_payload(decoded_token)
             return (user, True)
         except jwt.ExpiredSignatureError:
