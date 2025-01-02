@@ -68,6 +68,7 @@ def userNameSetter(request):
 class JWTAuthentication(BaseAuthentication):
     def authenticate(self, request):
         auth_header = request.COOKIES.get('access_token')
+        print(auth_header)
         if not auth_header:
             return None
         token = auth_header
