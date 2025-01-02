@@ -40,12 +40,13 @@ api.interceptors.response.use(
       console.log("403 detected, attempting to refresh token...");
       try {
         await refreshAccessToken();
+        return Promise.resolve();
       } catch (refreshError) {
         console.error("Refresh token failed");
+        return Promise.resolve();
       }
-      return Promise.resolve();
     }
-    return Promise.reject(error);
+    return Promise.resolve();
   }
 );
 
