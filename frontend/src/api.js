@@ -8,17 +8,17 @@ const api = axios.create({
 const refreshAccessToken = async () => {
   try {
     const response = await axios.get("https://sso-gatekeeper.onrender.com/refresh", { withCredentials: true });
-    if (response.ok) {
+    if (response.status === 200 && response.data.refresh) {
       localStorage.setItem(ACCESS_TOKEN, response.data.access_token);
       console.log('Tokens refreshed successfully');
       window.location.href = '/landing';
     } else {
       console.error('Failed to refresh tokens:', response.status);
-      // window.location.href = 'https://dev-63025152.okta.com/';
+      window.location.href = 'https://dev-63025152.okta.com/';
     }
   } catch (error) {
     console.error('Error refreshing tokens:', error);
-    // window.location.href = 'https://dev-63025152.okta.com/';
+    window.location.href = 'https://dev-63025152.okta.com/';
   }
 };
 
