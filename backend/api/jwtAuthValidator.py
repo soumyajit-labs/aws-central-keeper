@@ -47,10 +47,8 @@ def construct_rsa_key(n, e):
     return pem.decode('utf-8')
 
 def userNameSetter(request):
-    auth_header = request.COOKIES.get('access_token')
-    if not auth_header:
-        return None
-    token = auth_header
+    auth_header = request.headers.get('Authorization')
+    token = auth_header.split(' ')[1]
     try:
         unverified_header = jwt.get_unverified_header(token)
         kid = unverified_header['kid']
@@ -67,12 +65,10 @@ def userNameSetter(request):
 
 class JWTAuthentication(BaseAuthentication):
     def authenticate(self, request):
-        print(request.COOKIES)
-        auth_header = request.COOKIES.get('access_token')
-        print(auth_header)
-        if not auth_header:
+        auth_header = request.headers.get('Authorization')
+        if not auth_header or not auth_header.startswith('Bearer '):
             return None
-        token = auth_header
+        token = auth_header.split(' ')[1]
         try:
             unverified_header = jwt.get_unverified_header(token)
             kid = unverified_header['kid']
