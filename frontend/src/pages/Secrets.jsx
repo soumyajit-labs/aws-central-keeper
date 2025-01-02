@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { DEV_ENCR_TOKEN } from "../constants";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
+import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap CSS
+import 'bootstrap/dist/js/bootstrap.bundle.min'; // Bootstrap JS (with bundle)
 
 function strFormatter(str) {
     let t1 = str.replace('\\n', '\n');
@@ -10,7 +12,7 @@ function strFormatter(str) {
     return t3;
 }
 
-function Secrets() {    
+function Secrets() {
     const [vaultName, setVaultName] = useState("");
     const [encryptedVaultContent, setEncryptedVaultContent] = useState("");
     const [isClickable, setIsClickable] = useState(false);
@@ -107,73 +109,67 @@ function Secrets() {
         <div>
             <head>
                 <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
-                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"></link>
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
             </head>
-            <div class="row">
-                <div class="col-sm-5">
+            <div className="row">
+                <div className="col-sm-5">
                     <h2>AWS Key Vault</h2>
                 </div>
-                <div class="col-sm-3">
-                    <br />
-                <button class="btn btn-info glyphicon glyphicon-log-out" 
-                        type="button" style={{"display": "block", "margin": "10 auto"}}
-                        onClick={logout}>    Logout    </button>
-                </div>
             </div>
-            <div class="row">
-                <div class="col-sm-5">
-                    <span>Encryption Key</span>
-                </div>
-                <div class="col-sm-1">
-                    &nbsp;
-                </div>
-                <div class="col-sm-4">
-                    <span>Vault Name</span>
-                </div>
-                <div class="col-sm-2">
-                    &nbsp;
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-5">
-                    <input id="encrKey" type="password" class="form-control" placeholder="Encryption Key" 
-                     defaultValue={DEV_ENCR_TOKEN} onChange={(e) => setKey(e.target.value)}/>
-                </div>
-                <div class="col-sm-1">
-                    &nbsp;
-                </div>
-                <div>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" placeholder="Vault Name" onChange={(e) => setVaultName(e.target.value)}/>
+            <div className="fluid-container">
+                <div className="row">
+                    <div className="col-sm-5">
+                        <div>
+                            <span>Encryption Key</span>
+                        </div>
+                        <div>
+                            <input id="encrKey" type="password" class="form-control" placeholder="Encryption Key"
+                                defaultValue={DEV_ENCR_TOKEN} onChange={(e) => setKey(e.target.value)} />
+                        </div>
                     </div>
-                    <div class="col-sm-2">
-                        <button class="btn btn-info glyphicon glyphicon-download event" type="button" onClick={() => {getSecret()}}> Download</button>
+                    <div className="col-sm-1">
+                        &nbsp;
                     </div>
-                </div>
-                <hr/>
-            </div>
-            <div class="fluid-container">
-                <div class="row">
-                    <div class="col-sm-5">
-                        <div class="input-group">
-                            <textarea id="yamlDecrypted" rows="16" class="form-control" placeholder="Decrypted YAML" onChange={(e) => setDecryptedVaultContent(e.target.value)}></textarea>
-                            <div class="input-group-addon">
-                                <div class="glyphicon glyphicon-download event"></div>
+                    <div className="col-sm-4">
+                        <div>
+                            <span>Vault Name</span>
+                        </div>
+                        <div>
+                            <div>
+                                <input type="text" class="form-control" placeholder="Vault Name" onChange={(e) => setVaultName(e.target.value)} />
+
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-1">
-                        <button class="btn btn-info glyphicon glyphicon-arrow-right" type="button" onClick={(e) => translate(e, 'encrypt')}> Encrypt</button>
-                        <hr></hr>
-                        <button class="btn btn-info glyphicon glyphicon-arrow-left" type="button" onClick={(e) => translate(e, 'decrypt')}> Decrypt</button>
+                    <div className="col-sm-2">
+                        &nbsp;
+                        <div>
+                            <button class="btn btn-info glyphicon glyphicon-download event" type="button" onClick={() => { getSecret() }}> Download</button>
+                        </div>
                     </div>
-                    <div class="col-sm-6">
-                        <div class="input-group">
+                </div>
+            </div>
+
+            <hr />
+            <div className="fluid-container">
+                <div className="row">
+                    <div className="col-sm-5">
+                        <div className="input-group">
+                            <textarea id="yamlDecrypted" rows="16" class="form-control" placeholder="Decrypted YAML" onChange={(e) => setDecryptedVaultContent(e.target.value)}></textarea>
+                            <div className="input-group-addon">
+                                <div className="glyphicon glyphicon-download event"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-sm-1 text-center">
+                        <button class="btn btn-info glyphicon glyphicon-arrow-right" type="button" onClick={(e) => translate(e, 'encrypt')}> {`Encrypt ==>`} </button>
+                        <hr></hr>
+                        <button class="btn btn-info glyphicon glyphicon-arrow-left" type="button" onClick={(e) => translate(e, 'decrypt')}> {`<== Decrypt`} </button>
+                    </div>
+                    <div className="col-sm-6">
+                        <div className="input-group">
                             <textarea id="yamlEncrypted" rows="16" class="form-control" placeholder="Encrypted YAML" onChange={(e) => setEncryptedVaultContent(e.target.value)}></textarea>
-                            <div class="input-group-addon">
-                                <div class="glyphicon glyphicon-download event"></div>
+                            <div className="input-group-addon">
+                                <div className="glyphicon glyphicon-download event"></div>
                             </div>
                         </div>
                         <br />
@@ -184,20 +180,20 @@ function Secrets() {
                 </div>
             </div>
             <hr />
-            <div class="fluid-container">
+            <div className="fluid-container">
                 <h4>Directly retrigger the pipeline from here - </h4>
                 <br />
-                <div class="row">
-                    <div class="col-sm-5">
-                        <textarea id="retriggerArgs" rows="2" class="form-control" readOnly 
-                                  placeholder="Arguments with which the Github retrigger action will be called is displayed here..."></textarea>
+                <div className="row">
+                    <div className="col-sm-5">
+                        <textarea id="retriggerArgs" rows="2" class="form-control" readOnly
+                            placeholder="Arguments with which the Github retrigger action will be called is displayed here..."></textarea>
                     </div>
-                    <div class="col-sm-1">
-                        <button class="btn btn-info glyphicon glyphicon-refresh" disabled={!isClickable} onClick={(e) => {retriggerGithubBuild(e)}} type="button">  Retrigger</button>
+                    <div className="col-sm-1 text-center">
+                        <button class="btn btn-info glyphicon glyphicon-refresh" disabled={!isClickable} onClick={(e) => { retriggerGithubBuild(e) }} type="button">  Retrigger</button>
                     </div>
-                    <div class="col-sm-6">
-                        <textarea id="retriggerStatus" rows="2" class="form-control" readOnly 
-                                  placeholder="Retrigger status will be displayed here..."></textarea>
+                    <div className="col-sm-6">
+                        <textarea id="retriggerStatus" rows="2" class="form-control" readOnly
+                            placeholder="Retrigger status will be displayed here..."></textarea>
                     </div>
                 </div>
             </div>

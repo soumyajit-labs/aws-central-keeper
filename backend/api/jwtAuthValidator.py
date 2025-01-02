@@ -47,8 +47,10 @@ def construct_rsa_key(n, e):
     return pem.decode('utf-8')
 
 def userNameSetter(request):
-    auth_header = request.headers.get('Authorization')
-    token = auth_header.split(' ')[1]
+    auth_header = request.COOKIES.get('access_token')
+    if not auth_header:
+        return None
+    token = auth_header
     try:
         unverified_header = jwt.get_unverified_header(token)
         kid = unverified_header['kid']
@@ -65,10 +67,10 @@ def userNameSetter(request):
 
 class JWTAuthentication(BaseAuthentication):
     def authenticate(self, request):
-        auth_header = request.headers.get('Authorization')
-        if not auth_header or not auth_header.startswith('Bearer '):
+        auth_header = request.COOKIES.get('access_token')
+        if not auth_header:
             return None
-        token = auth_header.split(' ')[1]
+        token = auth_header
         try:
             unverified_header = jwt.get_unverified_header(token)
             kid = unverified_header['kid']
@@ -84,8 +86,6 @@ class JWTAuthentication(BaseAuthentication):
         except jwt.InvalidTokenError as e:
             raise AuthenticationFailed(f'Invalid token: {e}')
     
-
-
     def get_user_from_payload(self, payload):
         return {
             'id': payload.get('sub'),

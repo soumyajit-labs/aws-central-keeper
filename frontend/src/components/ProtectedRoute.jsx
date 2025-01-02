@@ -1,51 +1,39 @@
-import { Navigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import api from "../api";
-import { REFRESH_TOKEN, ACCESS_TOKEN } from "../constants";
 import { useState, useEffect } from "react";
-import { refreshToken } from "./OktaAuthServices";
 
 function ProtectedRoute({ children }) {
     const [isAuthorized, setIsAuthorized] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        auth().catch(() => setIsAuthorized(false))
-    }, [])
-
-    const refreshToken = async () => {
-        const refreshToken = localStorage.getItem(REFRESH_TOKEN);
-        try {
-            const auth = await refreshToken();
-            localStorage.setItem(ACCESS_TOKEN, auth);
-            setIsAuthorized(true);
-        } catch (error) {
-            console.log(error);
-            setIsAuthorized(false);
-        }
-    };
-
-    const auth = async () => {
-        const token = localStorage.getItem(ACCESS_TOKEN);
-        if (!token) {
-            setIsAuthorized(false);
-            return;
-        }
-        const decoded = jwtDecode(token);
-        const tokenExpiration = decoded.exp;
-        const now = Date.now() / 1000;
-
-        if (tokenExpiration < now) {
-            await refreshToken();
-        } else {
-            setIsAuthorized(true);
-        }
-    };
-
-    if (isAuthorized === null) {
+        const validateCookies = async () => {
+            try {
+                const response = await api.get("https://sso-gatekeeper.onrender.com/verify");
+                if (response.status === 200 && response.data.valid) {
+                    setIsAuthorized(true);
+                } else {
+                    setIsAuthorized(false);
+                }
+            } catch (error) {
+                console.error("Token validation failed:", error);
+                setIsAuthorized(false);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        validateCookies();
+    }, []);
+    
+    if (isLoading) {
         return <div>Loading...</div>;
     }
+    
+    if (!isAuthorized) {
+        window.location.href = 'https://dev-63025152.okta.com/';
+        return null;
+    }
 
-    return isAuthorized ? children : <Navigate to="/login" />;
+    return <>{children}</>;
 }
 
 export default ProtectedRoute;

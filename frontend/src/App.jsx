@@ -1,21 +1,19 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import Secrets from './pages/Secrets'
-import Login from './pages/Login'
+import Landing from './pages/Landing'
 import ProtectedRoute from './components/ProtectedRoute'
-
-function Logout() {
-  localStorage.clear()
-  return <Navigate to="/login" />
-}
+import Layout from './components/Layout'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={ <Login /> } />
-        <Route path="/login" element={<Login />} />
-        <Route path="/secrets" element={ <ProtectedRoute> <Secrets /> </ProtectedRoute>} />
+        <Route path="/" element={<Layout />}>
+          <Route path="/" element={ <ProtectedRoute> <Landing /> </ProtectedRoute>} />
+          <Route path="/secrets" element={ <ProtectedRoute> <Secrets /> </ProtectedRoute>} />
+          <Route path="/landing" element={ <ProtectedRoute> <Landing /> </ProtectedRoute>} />
+        </Route>
       </Routes>
     </BrowserRouter>
   )

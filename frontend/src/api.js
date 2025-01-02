@@ -1,33 +1,38 @@
 import axios from "axios";
-import { ACCESS_TOKEN } from "./constants";
-import { jwtDecode } from "jwt-decode";
-import { refreshToken } from "./components/OktaAuthServices";
-
 const apiUrl = "/choreo-apis/mulecentral/backend/v1";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : apiUrl
+  baseURL: import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : apiUrl,
+  withCredentials: true,
 });
 
-api.interceptors.request.use(
-  async (config) => {
-    const token = localStorage.getItem(ACCESS_TOKEN);
-    
-    const decoded = jwtDecode(token);
-    const tokenExpiration = decoded.exp;
-    const now = Date.now() / 1000;
-
-    if (tokenExpiration < now) {
-      console.log('Trying to fetch a new token...');
-      const auth = await refreshToken();
-      localStorage.setItem(ACCESS_TOKEN, auth);
-      config.headers.Authorization = `Bearer ${auth}`;
+const refreshAccessToken = async () => {
+  try {
+    const response = await axios.post("https://sso-gatekeeper.onrender.com/refresh", { withCredentials: true });
+    if (response.ok) {
+      console.log('Tokens refreshed successfully');
+      window.location.href = '/landing';
     } else {
-      config.headers.Authorization = `Bearer ${token}`;
+      console.error('Failed to refresh tokens:', response.status);
+      window.location.href = 'https://dev-63025152.okta.com/';
     }
-    return config;
-  },
-  (error) => {
+  } catch (error) {
+    console.error('Error refreshing tokens:', error);
+    window.location.href = 'https://dev-63025152.okta.com/';
+  }
+};
+
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response && error.response.status === 403) {
+      console.log("403 detected, attempting to refresh token...");
+      try {
+        await refreshAccessToken();
+      } catch (refreshError) {
+        console.error("Refresh token failed");
+      }
+    }
     return Promise.reject(error);
   }
 );
