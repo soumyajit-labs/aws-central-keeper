@@ -8,6 +8,7 @@ const api = axios.create({
 const refreshAccessToken = async () => {
   try {
     const response = await axios.get("https://sso-gatekeeper.onrender.com/refresh", { withCredentials: true });
+    console.log(response)
     if (response.status === 200 && response.data.refresh) {
       localStorage.setItem(ACCESS_TOKEN, response.data.access_token);
       console.log('Tokens refreshed successfully');
