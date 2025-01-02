@@ -28,7 +28,7 @@ function Secrets() {
     }
 
     const getSecret = (e) => {
-        api.get("/api/aws/secrets/fetch/?name=" + vaultName)
+        api.get("/api/aws/secrets/fetch/?name=" + vaultName, {withCredentials: true})
             .then((res) => res.data)
             .then((data) => { if (data == 400) {document.getElementById('yamlEncrypted').value = "Unhandled problem!"; 
                               resetRetriggerTextAreas();} else
@@ -42,7 +42,7 @@ function Secrets() {
 
     const postSecret = (e) => {
         e.preventDefault();
-        api.post("/api/aws/secrets/upsert/", { 'name': vaultName, 'value': encryptedVaultContent })
+        api.post("/api/aws/secrets/upsert/", { 'name': vaultName, 'value': encryptedVaultContent }, {withCredentials: true})
             .then((res) => { if (res.data == 200) {
                                 document.getElementById('yamlEncrypted').value = "Vault updated!";
                                 setIsClickable(true);
@@ -66,7 +66,7 @@ function Secrets() {
     const retriggerGithubBuild = (e) => {
         e.preventDefault();
         const args = vaultName.indexOf('-');
-        api.post("/api/git/retrigger/", { 'event': vaultName.substring(0, args), 'repository': vaultName.substring(args + 1) })
+        api.post("/api/git/retrigger/", { 'event': vaultName.substring(0, args), 'repository': vaultName.substring(args + 1) }, {withCredentials: true})
             .then((res) => { const retriggerStatus = document.getElementById('retriggerStatus');
                              retriggerStatus.value = res.data['message'];
                              if (res.data['status'] == 204) { retriggerStatus.style.backgroundColor = '#00FF00'; } 
@@ -88,7 +88,7 @@ function Secrets() {
         else { content = decryptedVaultContent; }
         console.log({ 'text': content, 'operation': operation, 'key': eKey });
         
-        api.post("/api/secrets/translate/raml/", { 'text': content, 'operation': operation, 'key': eKey })
+        api.post("/api/secrets/translate/raml/", { 'text': content, 'operation': operation, 'key': eKey }, {withCredentials: true})
            .then((res) => {
                 console.log(res.statusText);
                 if (operation == 'decrypt') { setDecryptedVaultContent(res.data['value']);

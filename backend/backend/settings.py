@@ -11,15 +11,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 '''
 
 from pathlib import Path
-from datetime import timedelta
 from dotenv import load_dotenv
-from functools import lru_cache
-from cryptography.hazmat.primitives.asymmetric import rsa
-from cryptography.hazmat.primitives import serialization
-from base64 import urlsafe_b64decode
 import os
-import time
-import requests
 
 load_dotenv()
 
