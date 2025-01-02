@@ -27,7 +27,6 @@ api.interceptors.request.use(
   async (config) => {
     const token = localStorage.getItem(ACCESS_TOKEN);
     config.headers.Authorization = `Bearer ${token}`;
-    config.headers.withCredentials = true;
     return config;
   },
   (error) => {

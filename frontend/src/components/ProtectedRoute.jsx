@@ -1,4 +1,3 @@
-import api from "../api";
 import { ACCESS_TOKEN } from "../constants";
 import { useState, useEffect } from "react";
 
@@ -9,7 +8,7 @@ function ProtectedRoute({ children }) {
     useEffect(() => {
         const validateCookies = async () => {
             try {
-                const response = await api.get("https://sso-gatekeeper.onrender.com/verify");
+                const response = await axios.get("https://sso-gatekeeper.onrender.com/verify", { withCredentials: true });
                 if (response.status === 200 && response.data.valid) {
                     localStorage.setItem(ACCESS_TOKEN, response.data.access_token);
                     setIsAuthorized(true);
