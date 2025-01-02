@@ -14,11 +14,11 @@ const refreshAccessToken = async () => {
       window.location.href = '/landing';
     } else {
       console.error('Failed to refresh tokens:', response.status);
-      // window.location.href = 'https://dev-63025152.okta.com/';
+      window.location.href = 'https://dev-63025152.okta.com/';
     }
   } catch (error) {
     console.error('Error refreshing tokens:', error);
-    // window.location.href = 'https://dev-63025152.okta.com/';
+    window.location.href = 'https://dev-63025152.okta.com/';
   }
 };
 
