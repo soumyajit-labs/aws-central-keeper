@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { DEV_ENCR_TOKEN } from "../constants";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
-import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap CSS
-import 'bootstrap/dist/js/bootstrap.bundle.min'; // Bootstrap JS (with bundle)
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 function strFormatter(str) {
     let t1 = str.replace('\\n', '\n');
@@ -136,7 +136,6 @@ function Secrets() {
                         <div>
                             <div>
                                 <input type="text" class="form-control" placeholder="Vault Name" onChange={(e) => setVaultName(e.target.value)} />
-
                             </div>
                         </div>
                     </div>

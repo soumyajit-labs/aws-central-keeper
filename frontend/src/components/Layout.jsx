@@ -6,7 +6,7 @@ const Layout = () => (
   <div>
     <Navbar />
     <main>
-      <Outlet /> {/* This will render the nested routes */}
+      <Outlet />
     </main>
   </div>
 );
