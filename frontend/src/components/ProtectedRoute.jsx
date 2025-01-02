@@ -29,7 +29,7 @@ function ProtectedRoute({ children }) {
     }
     
     if (!isAuthorized) {
-        window.location.href = 'https://dev-63025152.okta.com/';
+        // window.location.href = 'https://dev-63025152.okta.com/';
         return null;
     }
 
