@@ -2,13 +2,12 @@ import axios from "axios";
 import { ACCESS_TOKEN } from "./constants";
 
 const api = axios.create({
-  baseURL: "https://aws-central-keeper.onrender.com/",
-  withCredentials: true,
+  baseURL: "https://aws-central-keeper.onrender.com/"
 });
 
 const refreshAccessToken = async () => {
   try {
-    const response = await axios.post("https://sso-gatekeeper.onrender.com/refresh", { withCredentials: true });
+    const response = await axios.get("https://sso-gatekeeper.onrender.com/refresh", { withCredentials: true });
     if (response.ok) {
       localStorage.setItem(ACCESS_TOKEN, response.data.access_token);
       console.log('Tokens refreshed successfully');
