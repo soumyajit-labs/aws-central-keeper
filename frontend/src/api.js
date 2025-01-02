@@ -12,7 +12,7 @@ const refreshAccessToken = async () => {
     if (response.status === 200 && response.data.refresh) {
       localStorage.setItem(ACCESS_TOKEN, response.data.access_token);
       console.log('Tokens refreshed successfully');
-      window.location.href = '/landing';
+      // window.location.href = '/landing';
     } else {
       console.error('Failed to refresh tokens:', response.status);
       window.location.href = 'https://dev-63025152.okta.com/';
