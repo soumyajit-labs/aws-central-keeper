@@ -43,6 +43,7 @@ api.interceptors.response.use(
       } catch (refreshError) {
         console.error("Refresh token failed");
       }
+      return Promise.resolve();
     }
     return Promise.reject(error);
   }
