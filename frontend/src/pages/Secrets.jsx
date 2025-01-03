@@ -30,7 +30,8 @@ function Secrets() {
     const getSecret = (e) => {
         api.get("/api/aws/secrets/fetch/?name=" + vaultName, {withCredentials: true})
             .then((res) => res.data)
-            .then((data) => { if (data == 400) {document.getElementById('yamlEncrypted').value = "Unhandled problem!"; 
+            .then((data) => { console.log(data);
+                              if (data == 400) {document.getElementById('yamlEncrypted').value = "Unhandled problem!"; 
                               resetRetriggerTextAreas();} else
                               if (data == 404) {document.getElementById('yamlEncrypted').value = "Not found!"; 
                               resetRetriggerTextAreas();}
