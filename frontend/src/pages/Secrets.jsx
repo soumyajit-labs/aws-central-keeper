@@ -73,7 +73,7 @@ function Secrets() {
                              else { retriggerStatus.style.backgroundColor = '#FF0000'; } 
                              setIsClickable(false);
                            })
-            .catch((err) => document.getElementById('yamlEncrypted').value = "Oh snap! Rerouting...");
+            .catch((err) => document.getElementById('retriggerStatus').value = "Oh snap! Rerouting...");
     };
 
     const [decryptedVaultContent, setDecryptedVaultContent] = useState("");
@@ -96,7 +96,7 @@ function Secrets() {
                 else { setEncryptedVaultContent(res.data['value']);
                        document.getElementById('yamlEncrypted').value = strFormatter(res.data['value']); }
             })
-            .catch((err) => document.getElementById('yamlEncrypted').value = "Oh snap! Rerouting...");
+            .catch((err) => document.getElementById('yamlDecrypted').value = "Oh snap! Rerouting...");
     };
 
     let navigate = useNavigate();
