@@ -16,23 +16,23 @@ const refreshAccessToken = async () => {
         try {
           localStorage.setItem(ACCESS_TOKEN, response_data.access_token);
           console.log('Token refreshed & stored successfully');
-          // window.location.href = '/landing';
+          window.location.href = '/landing';
         }
         catch (error) {
           console.error('Error while setting the access token:', response.status);
-          // window.location.href = 'https://dev-63025152.okta.com/';
+          window.location.href = 'https://dev-63025152.okta.com/';
         }
       } else {
         console.error('Access token not in the response:', response.status);
-        // window.location.href = 'https://dev-63025152.okta.com/';
+        window.location.href = 'https://dev-63025152.okta.com/';
       } 
     } else {
       console.error('Failed to refresh tokens:', response.status);
-      // window.location.href = 'https://dev-63025152.okta.com/';
+      window.location.href = 'https://dev-63025152.okta.com/';
     }
   } catch (error) {
     console.error('Error refreshing tokens:', error);
-    // window.location.href = 'https://dev-63025152.okta.com/';
+    window.location.href = 'https://dev-63025152.okta.com/';
   }
 };
 

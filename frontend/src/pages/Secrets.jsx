@@ -30,7 +30,8 @@ function Secrets() {
     const getSecret = (e) => {
         api.get("/api/aws/secrets/fetch/?name=" + vaultName, {withCredentials: true})
             .then((res) => res.data)
-            .then((data) => { console.log(data);
+            .then((data) => { if (data == 403) {document.getElementById('yamlEncrypted').value = "Token expired..."; 
+                              resetRetriggerTextAreas();} else
                               if (data == 400) {document.getElementById('yamlEncrypted').value = "Unhandled problem!"; 
                               resetRetriggerTextAreas();} else
                               if (data == 404) {document.getElementById('yamlEncrypted').value = "Not found!"; 
@@ -44,7 +45,8 @@ function Secrets() {
     const postSecret = (e) => {
         e.preventDefault();
         api.post("/api/aws/secrets/upsert/", { 'name': vaultName, 'value': encryptedVaultContent }, {withCredentials: true})
-            .then((res) => { if (res.data == 200) {
+            .then((res) => { if (res.data == 403) {document.getElementById('yamlEncrypted').value = "Token expired...";} else
+                             if (res.data == 200) {
                                 document.getElementById('yamlEncrypted').value = "Vault updated!";
                                 setIsClickable(true);
                                 const args = vaultName.indexOf('-');
