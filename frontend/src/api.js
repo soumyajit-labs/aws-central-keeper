@@ -8,24 +8,29 @@ const api = axios.create({
 const refreshAccessToken = async () => {
   try {
     const response = await axios.get("https://sso-gatekeeper.onrender.com/refresh", { withCredentials: true });
-    console.log(response)
+    console.log(response.data)
     if (response.status === 200) {
-      try {
-        localStorage.setItem(ACCESS_TOKEN, response.data.access_token);
-      }
-      catch (error) {
-        console.error('Error while setting the access token:', response.status);
-        window.location.href = 'https://dev-63025152.okta.com/';
-      }
-      console.log('Tokens refreshed successfully');
-      window.location.href = '/landing';
+      if (response.data && response.data.access_token) {
+        try {
+          localStorage.setItem(ACCESS_TOKEN, response.data.access_token);
+          console.log('Token refreshed & stored successfully');
+          // window.location.href = '/landing';
+        }
+        catch (error) {
+          console.error('Error while setting the access token:', response.status);
+          // window.location.href = 'https://dev-63025152.okta.com/';
+        }
+      } else {
+        console.error('Access token not in the response:', response.status);
+        // window.location.href = 'https://dev-63025152.okta.com/';
+      } 
     } else {
       console.error('Failed to refresh tokens:', response.status);
-      window.location.href = 'https://dev-63025152.okta.com/';
+      // window.location.href = 'https://dev-63025152.okta.com/';
     }
   } catch (error) {
     console.error('Error refreshing tokens:', error);
-    window.location.href = 'https://dev-63025152.okta.com/';
+    // window.location.href = 'https://dev-63025152.okta.com/';
   }
 };
 
