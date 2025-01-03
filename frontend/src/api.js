@@ -10,7 +10,13 @@ const refreshAccessToken = async () => {
     const response = await axios.get("https://sso-gatekeeper.onrender.com/refresh", { withCredentials: true });
     console.log(response)
     if (response.status === 200) {
-      localStorage.setItem(ACCESS_TOKEN, response.data.access_token);
+      try {
+        localStorage.setItem(ACCESS_TOKEN, response.data.access_token);
+      }
+      catch (error) {
+        console.error('Error while setting the access token:', response.status);
+        window.location.href = 'https://dev-63025152.okta.com/';
+      }
       console.log('Tokens refreshed successfully');
       window.location.href = '/landing';
     } else {
