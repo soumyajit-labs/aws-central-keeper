@@ -30,23 +30,20 @@ function Secrets() {
     const getSecret = (e) => {
         api.get("/api/aws/secrets/fetch/?name=" + vaultName)
             .then((res) => res.data)
-            .then((data) => { console.log(data);
-                              if (data == 403) {document.getElementById('yamlEncrypted').value = "Token expired..."; 
-                              resetRetriggerTextAreas();} else
-                              if (data == 400) {document.getElementById('yamlEncrypted').value = "Unhandled problem!"; 
+            .then((data) => { if (data == 400) {document.getElementById('yamlEncrypted').value = "Unhandled problem!"; 
                               resetRetriggerTextAreas();} else
                               if (data == 404) {document.getElementById('yamlEncrypted').value = "Not found!"; 
                               resetRetriggerTextAreas();}
                               else {setEncryptedVaultContent(data); console.log(encryptedVaultContent); 
                               document.getElementById('yamlEncrypted').value = strFormatter(data); 
-                              resetRetriggerTextAreas();}});
+                              resetRetriggerTextAreas();}})
+            .catch((err) => document.getElementById('yamlEncrypted').value = "Oh snap! Rerouting...");
     };
 
     const postSecret = (e) => {
         e.preventDefault();
         api.post("/api/aws/secrets/upsert/", { 'name': vaultName, 'value': encryptedVaultContent })
-            .then((res) => { if (res.data == 403) {document.getElementById('yamlEncrypted').value = "Token expired...";} else
-                             if (res.data == 200) {
+            .then((res) => { if (res.data == 200) {
                                 document.getElementById('yamlEncrypted').value = "Vault updated!";
                                 setIsClickable(true);
                                 const args = vaultName.indexOf('-');
@@ -62,7 +59,8 @@ function Secrets() {
                                 const retriggerArgText = document.getElementById('retriggerArgs');
                                 retriggerArgText.value = "Oh snap, the credentials cannot be updated!";
                                 retriggerArgText.style.backgroundColor = '#FF0000';
-                            } });
+                            } })
+            .catch((err) => document.getElementById('yamlEncrypted').value = "Oh snap! Rerouting...");
     };
 
     const retriggerGithubBuild = (e) => {
@@ -74,7 +72,8 @@ function Secrets() {
                              if (res.data['status'] == 204) { retriggerStatus.style.backgroundColor = '#00FF00'; } 
                              else { retriggerStatus.style.backgroundColor = '#FF0000'; } 
                              setIsClickable(false);
-                           });
+                           })
+            .catch((err) => document.getElementById('yamlEncrypted').value = "Oh snap! Rerouting...");
     };
 
     const [decryptedVaultContent, setDecryptedVaultContent] = useState("");
@@ -96,7 +95,8 @@ function Secrets() {
                                               document.getElementById('yamlDecrypted').value = strFormatter(res.data['value']); }
                 else { setEncryptedVaultContent(res.data['value']);
                        document.getElementById('yamlEncrypted').value = strFormatter(res.data['value']); }
-            });
+            })
+            .catch((err) => document.getElementById('yamlEncrypted').value = "Oh snap! Rerouting...");
     };
 
     let navigate = useNavigate();
